@@ -19,6 +19,7 @@ const AbsensiTable: React.FC<AbsensiTableProps> = ({ data }) => {
         <DataTable.Title>ID</DataTable.Title>
         <DataTable.Title>Nama Guru</DataTable.Title>
         <DataTable.Title>Waktu Absensi</DataTable.Title>
+        <DataTable.Title>NIS</DataTable.Title>
       </DataTable.Header>
 
       {data.map((absensi) => (
