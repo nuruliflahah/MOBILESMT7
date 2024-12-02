@@ -1,36 +1,101 @@
-import React from 'react';
-import { DataTable } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, FlatList, Text, StyleSheet, Button } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
-interface Absensi {
-  id: number;
-  nama: string;
-  waktu: string;
-}
+const App: React.FC = () => {
+  // State untuk daftar absensi
+  const [absensiList, setAbsensiList] = useState<
+    { tanggal: string; idGuru: string; idPelajaran: string; status: string }[]
+  >([]);
 
-interface AbsensiTableProps {
-  data: Absensi[];
-}
+  // State untuk input data
+  const [tanggal, setTanggal] = useState('');
+  const [idGuru, setIdGuru] = useState('');
+  const [idPelajaran, setIdPelajaran] = useState('');
+  const [status, setStatus] = useState('');
 
-const AbsensiTable: React.FC<AbsensiTableProps> = ({ data }) => {
+  // Fungsi untuk menambah data absensi
+  const handleAddAbsensi = () => {
+    if (tanggal && idGuru && idPelajaran && status) {
+      setAbsensiList((currentAbsensi) => [
+        ...currentAbsensi,
+        { tanggal, idGuru, idPelajaran, status },
+      ]);
+      // Reset input
+      setTanggal('');
+      setIdGuru('');
+      setIdPelajaran('');
+      setStatus('');
+    } else {
+      alert('Harap isi semua bidang!');
+    }
+  };
+
   return (
-    <DataTable>
-      <DataTable.Header>
-        <DataTable.Title>ID</DataTable.Title>
-        <DataTable.Title>Nama Guru</DataTable.Title>
-        <DataTable.Title>Waktu Absensi</DataTable.Title>
-        <DataTable.Title>NIS</DataTable.Title>
-      </DataTable.Header>
+    <View style={styles.container}>
+      {/* Input Data Absensi */}
+      <View style={styles.inputContainer}>
+        <TextInput
+          label="Tanggal (YYYY-MM-DD)"
+          value={tanggal}
+          onChangeText={setTanggal}
+          style={styles.input}
+        />
+        <TextInput
+          label="ID Guru"
+          value={idGuru}
+          onChangeText={setIdGuru}
+          style={styles.input}
+        />
+        <TextInput
+          label="ID Pelajaran"
+          value={idPelajaran}
+          onChangeText={setIdPelajaran}
+          style={styles.input}
+        />
+        <TextInput
+          label="Status (Hadir/Izin/Sakit/Tidak Hadir)"
+          value={status}
+          onChangeText={setStatus}
+          style={styles.input}
+        />
+        <Button title="Tambah Absensi" onPress={handleAddAbsensi} />
+      </View>
 
-      {data.map((absensi) => (
-        <DataTable.Row key={absensi.id}>
-          <DataTable.Cell>{absensi.id}</DataTable.Cell>
-          <DataTable.Cell>{absensi.nama}</DataTable.Cell>
-          <DataTable.Cell>{absensi.waktu}</DataTable.Cell>
-        </DataTable.Row>
-      ))}
-    </DataTable>
+      {/* Daftar Absensi */}
+      <FlatList
+        data={absensiList}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <Text style={styles.absensiItem}>
+            {`${item.tanggal} - Guru: ${item.idGuru} - Pelajaran: ${item.idPelajaran} - Status: ${item.status}`}
+          </Text>
+        )}
+        style={styles.list}
+      />
+    </View>
   );
 };
 
-export default AbsensiTable;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  input: {
+    marginBottom: 10,
+  },
+  list: {
+    marginTop: 20,
+  },
+  absensiItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+});
+
+export default App;
